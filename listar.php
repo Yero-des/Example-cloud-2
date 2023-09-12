@@ -1,3 +1,17 @@
+<?php
+
+include("conexion.php");
+$con = conexion();
+
+$sql = "SELECT * FROM persona";
+$resultado = pg_query($con, $sql);
+
+if (!$resultado) {
+    die("Error en la consulta: " . pg_last_error());
+}
+
+?>
+
 <!doctype html>
 <html lang="es">
   <head>
@@ -7,9 +21,6 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
-
-    
-
     <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/pricing/">
 
     <!-- Bootstrap core CSS -->
@@ -23,7 +34,7 @@
       <h5 class="my-0 mr-md-auto font-weight-normal"><img src="index2.png" style="width: 30px; position: absolute;"> <span style="position: relative; left: 35px;">Index</span></h5>
       <nav class="my-2 my-md-0 mr-md-3">
         <a class="p-2 text-dark" href="/listar.php">Listar</a>
-        <a class="p-2 text-dark" href="#">Registrar</a>
+        <a class="p-2 text-dark" href="/index.php">Registrar</a>
         <a class="p-2 text-dark" href="#">Actualizar</a>
         <a class="p-2 text-dark" href="#">Eliminar</a>
       </nav>
@@ -35,11 +46,34 @@
     </div>
 
     <div class="container">
-      <div class="card">
-        <div class="card-body">
-          Este es el listado
-        </div>
-      </div>
+
+      <?php
+      while ($persona = pg_fetch_assoc($resultado)) {
+      ?>
+          <div class="card mb-3">
+              <div class="card-body">
+                  <div class="row text-success">
+                      <div class="col-1">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                              <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                              <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                          </svg>
+                      </div>
+                      <div class="col-auto">
+                          <?php echo $persona['nombre']; ?>
+                      </div>
+                      <div class="col-auto">
+                          <?php echo $persona['apellido']; ?>
+                      </div>
+                      <div class="col-auto">
+                          <?php echo $persona['direccion']; ?>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      <?php
+      }
+      ?>
 
       <footer class="pt-4 my-md-5 pt-md-5 border-top">
         <div class="row">
@@ -51,6 +85,7 @@
       </footer>
     </div>
 
+    <?php pg_close($conexion); ?>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
